@@ -6,7 +6,8 @@ include theos/makefiles/common.mk
 TWEAK_NAME = Bluepicker
 Bluepicker_OBJC_FILES = Bluepicker.xm
 Bluepicker_FRAMEWORKS = Foundation UIKit
-Bluepicker_LDFLAGS = -Lactivator -L../theos/lib
+Bluepicker_PRIVATE_FRAMEWORKS = BluetoothManager
+Bluepicker_LDFLAGS = -lactivator -Ltheos/lib
 
 include $(THEOS_MAKE_PATH)/tweak.mk
 include $(THEOS_MAKE_PATH)/aggregate.mk

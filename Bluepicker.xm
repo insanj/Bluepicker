@@ -1,13 +1,14 @@
-//Bluepicker by Julian (insanj) Weiss
-//(cc) 2014 Julian Weiss, see full license in README.md
+// Bluepicker by Julian (insanj) Weiss
+// (CC) 2014 Julian Weiss, see full license in README.md
 
 #import <libactivator/libactivator.h>
 #import <UIKit/UIKit.h>
+#import <BluetoothManager/BluetoothManager.h>
 
 @interface Bluepicker : NSObject <LAListener, UIActionSheetDelegate> {
 @private
 	UIActionSheet *bluepickerSheet;
-	NSArray *devices;
+	NSMutableArray *devices;
 }
 @end
 
@@ -16,10 +17,14 @@
 // Called when the user-defined action is recognized, shows sheet
 -(void)activator:(LAActivator *)activator receiveEvent:(LAEvent *)event{
 	if(![self dismiss]){
-		devices = @[@"Hello", @"World"];
+		devices = [[BluetoothManager sharedInstance] pairedDevices];
 		bluepickerSheet = [[UIActionSheet alloc] initWithTitle:@"Bluepicker" delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
-		for(NSString *title in devices)
-	        [bluepickerSheet addButtonWithTitle:title];
+		
+		// Note: other methods of interest: 	//- (void)setDeviceScanningEnabled:(BOOL)arg1;
+												//- (id)connectedDevices;
+
+		for(BluetoothDevice *device in devices)
+	        [bluepickerSheet addButtonWithTitle:[device name]];
 	
 		[bluepickerSheet addButtonWithTitle:@"Cancel"];
 		[bluepickerSheet setCancelButtonIndex:devices.count];
@@ -46,7 +51,6 @@
 -(BOOL)dismiss{
 	if(bluepickerSheet){
 		[bluepickerSheet dismissWithClickedButtonIndex:[bluepickerSheet cancelButtonIndex] animated:YES];
-		
 		[bluepickerSheet release];
 		bluepickerSheet = nil;
 		return YES;
@@ -57,10 +61,9 @@
 
 // Method to connect to BluetoothManager device (clicked valid button)
 -(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex{
-	NSLog(@"--- clicked!");
-
 	if([actionSheet cancelButtonIndex] != buttonIndex){
-		// Connect to bluetooth device
+		NSLog(@"[Bluepicker] Detected device selection, trying to connect to: %@", [devices objectAtIndex:buttonIndex]);
+		[[BluetoothManager sharedInstance] connectDevice:[devices objectAtIndex:buttonIndex]];
 	}
 
 	[bluepickerSheet release];

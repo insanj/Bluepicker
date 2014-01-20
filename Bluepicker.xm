@@ -8,7 +8,7 @@
 @interface Bluepicker : NSObject <LAListener, UIActionSheetDelegate> {
 @private
 	UIActionSheet *bluepickerSheet;
-	NSMutableArray *devices;
+	NSArray *devices;
 }
 @end
 

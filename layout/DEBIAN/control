@@ -1,0 +1,10 @@
+Package: libactivator.Bluepicker
+Name: Bluepicker
+Pre-Depends: firmware (>= 7.0)
+Depends: mobilesubstrate, libactivator
+Version: 0.1
+Architecture: iphoneos-arm
+Description: Connect to Bluetooth devices via Activator.
+Maintainer: Julian Weiss <me@insanj.com>
+Author: Julian (insanj) Weiss
+Section: Tweaks

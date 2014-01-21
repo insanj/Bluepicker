@@ -26,8 +26,12 @@
 		
 		// Note: possible method of interest: -(void)setDeviceScanningEnabled:(BOOL)arg1;
 
-		for(BluetoothDevice *device in devices)
-	        [bluepickerSheet addButtonWithTitle:[device name]];
+		for(BluetoothDevice *device in devices){
+			if([[[BluetoothManager sharedInstance] connectedDevices] containsObject:device])
+	        	[bluepickerSheet addButtonWithTitle:[@"●  " stringByAppendingString:[device name]]];
+	        else
+	        	[bluepickerSheet addButtonWithTitle:[device name]];
+		}
 	
 		[bluepickerSheet addButtonWithTitle:@"Cancel"];
 		[bluepickerSheet setCancelButtonIndex:devices.count];

@@ -1,18 +1,20 @@
 // Bluepicker by Julian (insanj) Weiss
 // (CC) 2014 Julian Weiss, see full license in README.md
 
-#import <libactivator/libactivator.h>
-#import <UIKit/UIKit.h>
-#import <BluetoothManager/BluetoothManager.h>
-
-@interface Bluepicker : NSObject <LAListener, UIActionSheetDelegate> {
-@private
-	UIActionSheet *bluepickerSheet;
-	NSArray *devices;
-}
-@end
+#import "Bluepicker.h"
 
 @implementation Bluepicker
+
+-(id)init{
+	if((self = [super init]))
+		[[NSDistributedNotificationCenter defaultCenter] addObserver:self selector:@selector(showPicker) name:@"BPShowPicker" object:nil];
+
+	return self;
+}
+
+-(void)showPicker{
+	[self activator:nil receiveEvent:nil];
+}
 
 // Called when the user-defined action is recognized, shows sheet
 -(void)activator:(LAActivator *)activator receiveEvent:(LAEvent *)event{
@@ -31,7 +33,8 @@
 		[bluepickerSheet setCancelButtonIndex:devices.count];
 		[bluepickerSheet showInView:[[UIApplication sharedApplication] keyWindow]];
 		
-		[event setHandled:YES];
+		if(event)
+			[event setHandled:YES];
 	}
 
 	else
@@ -88,6 +91,8 @@
 }
 
 -(void)dealloc{
+	[[NSDistributedNotificationCenter defaultCenter] removeObserver:self];
+
 	[bluepickerSheet release];
 	[devices release];
 	[super dealloc];

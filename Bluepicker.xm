@@ -20,10 +20,9 @@
 		devices = [[[BluetoothManager sharedInstance] pairedDevices] retain];
 		NSLog(@"[Bluepicker] Received Activator event, listing paired devices: %@", devices);
 
-		bluepickerSheet = [[UIActionSheet alloc] initWithTitle:@"Bluepicker" delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+		bluepickerSheet = [[UIActionSheet alloc] initWithTitle:@"Bluepicker\nPaired Devices" delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
 		
-		// Note: other methods of interest: 	//- (void)setDeviceScanningEnabled:(BOOL)arg1;
-												//- (id)connectedDevices;
+		// Note: possible method of interest: -(void)setDeviceScanningEnabled:(BOOL)arg1;
 
 		for(BluetoothDevice *device in devices)
 	        [bluepickerSheet addButtonWithTitle:[device name]];
@@ -67,8 +66,16 @@
 	NSLog(@"[Bluepicker] Detected action sheet selection at index %i (cancel index: %i)", (int)buttonIndex, (int)[actionSheet cancelButtonIndex]);
 
 	if([actionSheet cancelButtonIndex] != buttonIndex){
-		NSLog(@"[Bluepicker] Trying to connect to: %@", [devices objectAtIndex:buttonIndex]);
-		[[BluetoothManager sharedInstance] connectDevice:[devices objectAtIndex:buttonIndex]];
+		BluetoothDevice *selected = [devices objectAtIndex:buttonIndex];
+		if([[[BluetoothManager sharedInstance] connectedDevices] containsObject:selected]){
+			NSLog(@"[Bluepicker] Trying to disconnected from: %@", selected);
+			[selected disconnect];
+		}
+
+		else{
+			NSLog(@"[Bluepicker] Trying to connect to: %@", selected);
+			[[BluetoothManager sharedInstance] connectDevice:selected];
+		}
 	}
 
 	else

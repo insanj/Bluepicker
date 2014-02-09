@@ -19,6 +19,17 @@
 // Called when the user-defined action is recognized, shows sheet
 -(void)activator:(LAActivator *)activator receiveEvent:(LAEvent *)event{
 	if(![self dismiss]){
+		if(event)
+			[event setHandled:YES];
+		
+		if(![[BluetoothManager sharedInstance] enabled]){
+			[[BluetoothManager sharedInstance] setEnabled:YES];
+			dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1.0 * NSEC_PER_SEC), dispatch_get_current_queue(), ^{
+				[self activator:activator receiveEvent:event];
+			});
+			return;
+		}
+
 		devices = [[[BluetoothManager sharedInstance] pairedDevices] retain];
 		NSLog(@"[Bluepicker] Received Activator event, listing paired devices: %@", devices);
 
@@ -36,9 +47,6 @@
 		[bluepickerSheet addButtonWithTitle:@"Cancel"];
 		[bluepickerSheet setCancelButtonIndex:devices.count];
 		[bluepickerSheet showInView:[[UIApplication sharedApplication] keyWindow]];
-		
-		if(event)
-			[event setHandled:YES];
 	}
 
 	else

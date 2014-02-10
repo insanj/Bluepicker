@@ -66,6 +66,12 @@
 		[event setHandled:YES];
 }
 
+// Restricts action to only be paired with other non-modal-ui actions
+-(NSArray *)activator:(LAActivator *)activator requiresExclusiveAssignmentGroupsForListenerName:(NSString *)listenerName{
+	return @[@"modal-ui"];
+}
+
+
 // Called when manual dismiss of action sheet is required (eg from double event calls)
 -(BOOL)dismiss{
 	if(bluepickerSheet){

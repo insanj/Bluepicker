@@ -4,7 +4,7 @@ ARCHS = armv7 arm64
 include theos/makefiles/common.mk
 
 TWEAK_NAME = Bluepicker
-Bluepicker_OBJC_FILES = Bluepicker.xm BPControlCenterButton.xm
+Bluepicker_OBJC_FILES = Bluepicker.xm BPControlCenterButton.xm Bluechooser.xm
 Bluepicker_FRAMEWORKS = Foundation UIKit
 Bluepicker_PRIVATE_FRAMEWORKS = BluetoothManager
 Bluepicker_LDFLAGS = -lactivator -Ltheos/lib

@@ -65,29 +65,31 @@
  
 @end
 
-%group Bluechooser
-
 %hook BluetoothManager
 
--(void)connectDevice:(id)arg1{
+-(void)postNotificationName:(id)arg1 object:(id)arg2{
 	%orig();
-	LASendEventWithName(kBluechooserConnectedEventName);
+	if([arg1 isEqualToString:@"BluetoothDeviceConnectSuccessNotification"]){
+		if(kBluechooserDidSucceed){
+			NSLog(@"[Bluepicker] Received bluetooth device connection notification, performing action...");
+			kBluechooserDidSucceed = NO; // Notification is always sent twice
+			LASendEventWithName(kBluechooserConnectedEventName);
+		}
+
+		else{
+			NSLog(@"[Bluepicker] Received phony bluetooth device connection notification, waiting to perform action...");
+			kBluechooserDidSucceed = YES;
+		}
+	}
+
+	else if([arg1 isEqualToString:@"BluetoothDeviceDisconnectSuccessNotification"]){
+		NSLog(@"[Bluepicker] Received bluetooth device disconnection notification...");
+		LASendEventWithName(kBluechooserDisconnectedEventName);
+	}
 }
 
 %end
-
-%hook BluetoothDevice
-
--(void)disconnect{
-	%orig();
-	LASendEventWithName(kBluechooserDisconnectedEventName);
-}
-
-%end
-
-%end //%group
 
 %ctor{
-	%init(Bluechooser)
 	[Bluechooser sharedInstance];
 }

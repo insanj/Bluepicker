@@ -7,6 +7,7 @@
 
 static NSString *kBluechooserConnectedEventName = @"com.insanj.bluepicker.connected";
 static NSString *kBluechooserDisconnectedEventName = @"com.insanj.bluepicker.disconnected";
+static BOOL kBluechooserDidSucceed = NO;
 
 __attribute__((always_inline))
 static inline LAEvent *LASendEventWithName(NSString *eventName) {

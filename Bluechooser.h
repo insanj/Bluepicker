@@ -20,5 +20,5 @@ static inline LAEvent *LASendEventWithName(NSString *eventName) {
 @end
 
 @interface Bluechooser : NSObject <LAEventDataSource>
-+(id)sharedInstance;
++ (id)sharedInstance;
 @end

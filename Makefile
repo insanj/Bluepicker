@@ -1,6 +1,7 @@
 THEOS_PACKAGE_DIR_NAME = debs
-TARGET=:clang
-ARCHS = armv7 arm64
+TARGET = :clang
+ARCHS = armv7 armv7s arm64
+
 include theos/makefiles/common.mk
 
 TWEAK_NAME = Bluepicker

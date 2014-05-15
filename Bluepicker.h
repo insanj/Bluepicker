@@ -4,9 +4,7 @@
 #import <libactivator/libactivator.h>
 #import <UIKit/UIKit.h>
 #import <BluetoothManager/BluetoothManager.h>
-
-@interface NSDistributedNotificationCenter : NSNotificationCenter
-@end
+#import <Foundation/NSDistributedNotificationCenter.h>
 
 @interface Bluepicker : NSObject <LAListener, UIActionSheetDelegate> {
 @private

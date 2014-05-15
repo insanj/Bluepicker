@@ -4,7 +4,8 @@ Depends: mobilesubstrate, libactivator
 Version: 1.3
 Architecture: iphoneos-arm
 Description: Control Bluetooth devices on the fly.
- Connect and disconnect from Bluetooth devices via Activator, or a long press on the Control Center toggle, and assign actions to device connections and disconnections.
+ Control your Bluetooth devices via Activator.
+ Bluepicker allows you to connect and disconnect from paired devices, as well as toggle Bluetooth using simple Activator actions. Choose a device from Bluepicker's selection sheet, and viola! Bluepicker also includes an Activator event, so you can assign any action you want to device connections and disconnections.
 Maintainer: Julian Weiss <insanjmail@gmail.com>
 Author: Julian (insanj) Weiss
 Section: Tweaks

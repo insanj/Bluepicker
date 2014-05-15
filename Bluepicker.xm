@@ -15,10 +15,11 @@
 }
 
 - (void)showPicker {
+	NSLog(@"[Bluepicker] Received external notification (possibly from Control Center), prompting Action...");
 	[self activator:nil receiveEvent:nil];
 }
 
-// Called when the user-defined action is recognized, shows sheet
+// Called when the user-defined action is recognized, shows selection sheet
 - (void)activator:(LAActivator *)activator receiveEvent:(LAEvent *)event {
 	if (![self dismiss]) {
 		if (event) {
@@ -102,7 +103,7 @@
 		}
 
 		else {
-		NSLog(@"[Bluepicker] Turning on Bluetooth as per user action");
+			NSLog(@"[Bluepicker] Turning on Bluetooth as per user action");
 			[[BluetoothManager sharedInstance] setEnabled:YES];
 		}
 	}

@@ -1,11 +1,15 @@
 Bluepicker
 =======================
 
-Connect, disconnect, and detect Bluetooth devices via Activator.
+Control your Bluetooth devices via Activator.
 
-Bluepicker allows you to connect and disconnect from paired devices using simple Activator actions. Choose a device from Bluepicker's selection sheet to connect or disconnect, and viola! Bluepicker also includes an Activator event, so you can assign any action you want to device connections and disconnections. Oh, and if you forgot to turn Bluetooth on before triggering, Bluepicker will handle that for you too.
+Bluepicker allows you to connect and disconnect from paired devices, as well as toggle Bluetooth using simple Activator actions. Choose a device from Bluepicker's selection sheet, and viola! Bluepicker also includes an Activator event, so you can assign any action you want to device connections and disconnections.
 
-Requires iOS 7 and [Activator](http://rpetri.ch/cydia/activator/). Check [Releases](https://github.com/insanj/Bluepicker/releases) for current builds and screenshots.
+Requires iOS 6 and above, as well as [Activator](http://rpetri.ch/cydia/activator/). Check [Releases](https://github.com/insanj/Bluepicker/releases) for current builds and screenshots.
+
+**Developers**: want to do something fancy with Bluepicker? To bring up the selection sheet, all you have to do is post a single notification that follows the form:
+
+	[[NSDistributedNotificationCenter defaultCenter] postNotificationName:@"BPShowPicker" object:nil];
 
 ---------------------------------------	
 [Creative Commons Attribution-NonCommercial 3.0 United States License](http://creativecommons.org/licenses/by-nc/3.0/us/) as of 2014:

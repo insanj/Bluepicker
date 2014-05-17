@@ -9,6 +9,18 @@
 	self = [super init];
 	if (self) {
 		[[NSDistributedNotificationCenter defaultCenter] addObserver:self selector:@selector(showPicker) name:@"BPShowPicker" object:nil];
+		
+		[[NSNotificationCenter defaultCenter] addObserverForName:@"BluetoothPowerChangedNotification" object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *notification){
+			if (waitingForToggle) {
+				NSLog(@"[Bluepicker] Heard Bluetooth toggle notification, looks like we're prompting again...");
+				waitingForToggle = NO;
+				[self showPicker];
+			}
+
+			else {
+				NSLog(@"[Bluepicker] Heard Bluetooth toggle notification, not prompting...");
+			}
+		}];
 	}
 
 	return self;
@@ -105,6 +117,7 @@
 		else {
 			NSLog(@"[Bluepicker] Turning on Bluetooth as per user action");
 			[[BluetoothManager sharedInstance] setEnabled:YES];
+			waitingForToggle = YES;
 		}
 	}
 

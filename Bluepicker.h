@@ -10,6 +10,7 @@
 @private
 	UIActionSheet *bluepickerSheet;
 	NSArray *devices;
+	BOOL waitingForToggle;
 }
 
 - (void)activator:(LAActivator *)activator receiveEvent:(LAEvent *)event;

@@ -67,7 +67,9 @@
 
 		[bluepickerSheet addButtonWithTitle:@"Cancel"];
 		[bluepickerSheet setCancelButtonIndex:devices.count+1];
-		[bluepickerSheet showInView:[[UIApplication sharedApplication] keyWindow]];
+
+
+		[bluepickerSheet showInView:[UIWindow keyWindow]];
 	}
 
 	else {

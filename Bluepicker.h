@@ -6,6 +6,10 @@
 #import <BluetoothManager/BluetoothManager.h>
 #import <Foundation/NSDistributedNotificationCenter.h>
 
+@interface UIWindow (Private)
++ (UIWindow *)keyWindow;
+@end
+
 @interface Bluepicker : NSObject <LAListener, UIActionSheetDelegate> {
 @private
 	UIActionSheet *bluepickerSheet;

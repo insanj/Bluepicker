@@ -1,7 +1,7 @@
 // Bluepicker by Julian (insanj) Weiss
 // (CC) 2014 Julian Weiss, see full license in README.md
 
-#import <Foundation/Foundation.h>
+#import <Foundation/NSDistributedNotificationCenter.h>
 #import <libactivator/libactivator.h>
 #import <BluetoothManager/BluetoothManager.h>
 
@@ -15,9 +15,6 @@ static inline LAEvent *LASendEventWithName(NSString *eventName) {
 	[LASharedActivator sendEventToListener:event];
 	return event;
 }
-
-@interface NSDistributedNotificationCenter : NSNotificationCenter
-@end
 
 @interface Bluechooser : NSObject <LAEventDataSource>
 + (id)sharedInstance;

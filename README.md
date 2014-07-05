@@ -1,9 +1,7 @@
 Bluepicker
 =======================
 
-Control Bluetooth devices via Activator.
-
-<img style="float:left; margin-right:10px;" src="screenie.png"/>
+Control Bluetooth devices via Activator. [Screenshot](screenie.png).
 
 Bluepicker allows you to connect and disconnect from paired devices, as well as toggle Bluetooth using simple Activator actions. Choose a device from Bluepicker's selection sheet, and viola! Bluepicker also includes an Activator event, so you can assign any action you want to device connections and disconnections. 
 

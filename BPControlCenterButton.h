@@ -1,11 +1,17 @@
-// Bluepicker by Julian (insanj) Weiss
-// (CC) 2014 Julian Weiss, see full license in README.md
+//
+//  BPControlCenterButton.h
+//  Bluepicker
+//	Injects a tap-and-hold listener to the Bluetooth button in Control Center.
+//	
+//  Created by Julian Weiss on 1/20/14.
+//  Copyright (c) 2014, insanj. All rights reserved.
+//
 
 #import "Bluepicker.h"
 
 @interface SBControlCenterButton : UIButton {
-		NSString *_identifier;
-		NSNumber *_sortKey;
+	NSString *_identifier;
+	NSNumber *_sortKey;
 }
 
 @property(copy, nonatomic) NSString *identifier;
@@ -14,23 +20,6 @@
 - (void)dealloc;
 @end
 
-@interface SBCCButtonLayoutView {
-	NSMutableArray *_buttons;
-	float _interButtonPadding;
-	UIEdgeInsets _contentEdgeInsets;
-}
-
-@property(assign, nonatomic) UIEdgeInsets contentEdgeInsets;
-@property(assign, nonatomic) float interButtonPadding;
-
-- (id)initWithFrame:(CGRect)frame;
-- (void)addButton:(SBControlCenterButton *)button;
-- (NSMutableArray *)buttons;
-- (void)dealloc;
-- (void)layoutSubviews;
-- (void)removeButton:(SBControlCenterButton *)button;
-@end
-
-@interface SBCCButtonLayoutView (Bluepicker)
+@interface SBControlCenterButton (Bluepicker)
 - (void)bluepicker_callActivatorAction:(UILongPressGestureRecognizer *)sender;
 @end

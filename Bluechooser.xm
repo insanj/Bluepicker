@@ -1,5 +1,11 @@
-// Bluepicker by Julian (insanj) Weiss
-// (CC) 2014 Julian Weiss, see full license in README.md
+//
+//  Bluechooser.xm
+//  Bluepicker
+//	Activator event for Bluetooth connections and disconnections.
+//	
+//  Created by Julian Weiss on 1/20/14.
+//  Copyright (c) 2014, insanj. All rights reserved.
+//
 
 #import "Bluechooser.h"
 

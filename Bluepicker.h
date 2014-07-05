@@ -1,14 +1,20 @@
-// Bluepicker by Julian (insanj) Weiss
-// (CC) 2014 Julian Weiss, see full license in README.md
+//
+//  Bluepicker.h
+//  Bluepicker
+//	Activator listener for Bluepicker selection sheet. Also hears notifications from outside parties.
+//	
+//  Created by Julian Weiss on 1/20/14.
+//  Copyright (c) 2014, insanj. All rights reserved.
+//
 
 #import <libactivator/libactivator.h>
 #import <UIKit/UIKit.h>
 #import <BluetoothManager/BluetoothManager.h>
 #import <Foundation/NSDistributedNotificationCenter.h>
-
-@interface UIWindow (Private)
-+ (UIWindow *)keyWindow;
-@end
+#import <SpringBoard/SpringBoard.h>
+#import <UIKit/UIActionSheet+Private.h>
+#import "substrate.h"
+#import <objc/runtime.h>
 
 @interface Bluepicker : NSObject <LAListener, UIActionSheetDelegate> {
 @private

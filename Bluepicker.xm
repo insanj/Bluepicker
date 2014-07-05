@@ -1,5 +1,11 @@
-// Bluepicker by Julian (insanj) Weiss
-// (CC) 2014 Julian Weiss, see full license in README.md
+//
+//  Bluepicker.xm
+//  Bluepicker
+//	Activator listener for Bluepicker selection sheet. Also hears notifications from outside parties.
+//	
+//  Created by Julian Weiss on 1/20/14.
+//  Copyright (c) 2014, insanj. All rights reserved.
+//
 
 #import "Bluepicker.h"
 
@@ -15,10 +21,6 @@
 				NSLog(@"[Bluepicker] Heard Bluetooth toggle notification, looks like we're prompting again...");
 				waitingForToggle = NO;
 				[self showPicker];
-			}
-
-			else {
-				NSLog(@"[Bluepicker] Heard Bluetooth toggle notification, not prompting...");
 			}
 		}];
 	}
@@ -67,9 +69,12 @@
 
 		[bluepickerSheet addButtonWithTitle:@"Cancel"];
 		[bluepickerSheet setCancelButtonIndex:devices.count+1];
-
-
-		[bluepickerSheet showInView:[UIWindow keyWindow]];
+	
+		// If there's a foreground app, show picker on top of it...
+		// SBApplication *frontMostApp = [springBoard _accessibilityFrontMostApplication];
+		// if (frontMostApp) [bluepickerSheet showInView:[frontMostApp keyWindow]];
+		// [bluepickerSheet _presentSheetFromView:[UIApplication sharedApplication].keyWindow above:YES];
+		[bluepickerSheet showInView:[UIApplication sharedApplication].keyWindow];
 	}
 
 	else {

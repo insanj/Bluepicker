@@ -12,6 +12,7 @@
 #import <BluetoothManager/BluetoothManager.h>
 #import <Foundation/NSDistributedNotificationCenter.h>
 #import <SpringBoard/SpringBoard.h>
+#import <SpringBoard/SBApplication.h>
 #import <UIKit/UIActionSheet+Private.h>
 #import "substrate.h"
 #import <objc/runtime.h>

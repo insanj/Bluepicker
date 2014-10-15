@@ -47,7 +47,7 @@
 		bluepickerSheet.actionSheetStyle = UIActionSheetStyleBlackTranslucent;
 
 		// Note: possible method of interest: -(void)setDeviceScanningEnabled:(BOOL)arg1;
-		for(BluetoothDevice *device in devices){
+		for (BluetoothDevice *device in devices) {
 			if ([[[BluetoothManager sharedInstance] connectedDevices] containsObject:device]) {
 	        	[bluepickerSheet addButtonWithTitle:[@"●  " stringByAppendingString:[device name]]];
 			}
@@ -68,11 +68,13 @@
 		[bluepickerSheet setDestructiveButtonIndex:bluepickerSheet.numberOfButtons-1];
 
 		[bluepickerSheet addButtonWithTitle:@"Cancel"];
-		[bluepickerSheet setCancelButtonIndex:devices.count+1];
+		[bluepickerSheet setCancelButtonIndex:bluepickerSheet.numberOfButtons-1];
 	
 		// If there's a foreground app, show picker on top of it...
-		// SBApplication *frontMostApp = [springBoard _accessibilityFrontMostApplication];
-		// if (frontMostApp) [bluepickerSheet showInView:[frontMostApp keyWindow]];
+		// SBApplication *frontMostApp = [(SpringBoard *)[UIApplication sharedApplication] _accessibilityFrontMostApplication];
+		// if (frontMostApp) {
+			//[bluepickerSheet showInView:[frontMostApp keyWindow]];
+		// }
 		// [bluepickerSheet _presentSheetFromView:[UIApplication sharedApplication].keyWindow above:YES];
 		[bluepickerSheet showInView:[UIApplication sharedApplication].keyWindow];
 	}
@@ -129,15 +131,27 @@
 	}
 
 	else if ([actionSheet cancelButtonIndex] != buttonIndex) {
-		BluetoothDevice *selected = [devices objectAtIndex:buttonIndex];
-		if ([[[BluetoothManager sharedInstance] connectedDevices] containsObject:selected]) {
-			NSLog(@"[Bluepicker] Trying to disconnected from: %@", selected);
-			[selected disconnect];
+		NSString *clickedButtonTitle = [actionSheet buttonTitleAtIndex:buttonIndex];
+		BluetoothDevice *selectedDevice = devices[buttonIndex];
+
+		// attempted fix for issue #8
+		if (![[selectedDevice name] isEqualToString:clickedButtonTitle]) {
+			for (BluetoothDevice *device in devices) {
+				if ([[device name] isEqualToString:clickedButtonTitle]) {
+					selectedDevice = device;
+					break;
+				} 
+			}	
+		}
+
+		if ([[[BluetoothManager sharedInstance] connectedDevices] containsObject:selectedDevice]) {
+			NSLog(@"[Bluepicker] Trying to disconnected from: %@", selectedDevice);
+			[selectedDevice disconnect];
 		}
 
 		else {
-			NSLog(@"[Bluepicker] Trying to connect to: %@", selected);
-			[[BluetoothManager sharedInstance] connectDevice:selected];
+			NSLog(@"[Bluepicker] Trying to connect to: %@", selectedDevice);
+			[[BluetoothManager sharedInstance] connectDevice:selectedDevice];
 		}
 	}
 

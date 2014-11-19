@@ -1,37 +1,34 @@
-Bluepicker
-=======================
+# [Bluepicker](http://insanj.github.io/Bluepicker)
 
-Control Bluetooth devices via Activator. [Screenshot](screenie.png).
+Control Bluetooth devices via Activator.
+![ios 7 combined usage screenshot](screenie.png)
 
-Bluepicker allows you to connect and disconnect from paired devices, as well as toggle Bluetooth using simple Activator actions. Choose a device from Bluepicker's selection sheet, and viola! Bluepicker also includes an Activator event, so you can assign any action you want to device connections and disconnections. 
+> Bluepicker allows you to connect and disconnect from paired devices, as well as toggle Bluetooth using simple Activator actions. Choose a device from Bluepicker's selection sheet, and viola! Bluepicker also includes an Activator event, so you can assign any action you want to device connections and disconnections. 
 
-Use [Polus](http://moreinfo.thebigboss.org/moreinfo/depiction.php?file=polusDp) (paid from @JW97) or [FlipControlCenter](http://moreinfo.thebigboss.org/moreinfo/depiction.php?file=flipcontrolcenterDp) (free from @rpetrich) for Control Center activation.
+> Use [Polus](http://moreinfo.thebigboss.org/moreinfo/depiction.php?file=polusDp) (paid from [Jack Willis](https://twitter.com/J_W97) or [FlipControlCenter](http://moreinfo.thebigboss.org/moreinfo/depiction.php?file=flipcontrolcenterDp) (free from [Ryan Petrich](https://twitter.com/rpetrich)) for Control Center activation.
 
-Requires iOS 5.x-7.x, as well as [Activator](http://rpetri.ch/cydia/activator/). Check [Releases](https://github.com/insanj/Bluepicker/releases) for current builds and screenshots.
+Supports iOS 5.x-8.x. Requires [Activator](http://rpetri.ch/cydia/activator/). Check [Releases](https://github.com/insanj/Bluepicker/releases) for current builds and screenshots.
 
----
+## Usage
 
-**Developers**: want to do something fancy with Bluepicker? To bring up the selection sheet, all you have to do is post a single notification that follows the form:
+Developers: want to do something fancy with Bluepicker? To bring up the selection sheet, all you have to do is post a single notification that follows the form:
 
 	[[NSDistributedNotificationCenter defaultCenter] postNotificationName:@"BPShowPicker" object:nil];
+	
+## [License](LICENSE.md)
 
----------------------------------------	
-[Creative Commons Attribution-NonCommercial 3.0 United States License](http://creativecommons.org/licenses/by-nc/3.0/us/) as of 2014:
+	Bluepicker: Control Bluetooth devices via Activator.
+	Copyright (C) 2014  Julian (insanj) Weiss
+	
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
 
-	Creative Commons Attribution-NonCommercial 3.0 United States License
-	Please visit above link for full license.
-	Human-readable summary of your abilities has been transcribed below.
-	
-	You are free to:
-	Share — copy and redistribute the material in any medium or format
-	Adapt — remix, transform, and build upon the material
-	The licensor cannot revoke these freedoms as long as you follow the license terms.
-	
-	Under the following terms:
-	Attribution — You must give appropriate credit, provide a link to the license, and indicate if changes were made. You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.
-	NonCommercial — You may not use the material for commercial purposes.
-	No additional restrictions — You may not apply legal terms or technological measures that legally restrict others from doing anything the license permits.
-	
-	Notices:
-	You do not have to comply with the license for elements of the material in the public domain or where your use is permitted by an applicable exception or limitation.
-	No warranties are given. The license may not give you all of the permissions necessary for your intended use. For example, other rights such as publicity, privacy, or moral rights may limit how you use the material.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.

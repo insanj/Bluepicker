@@ -1,11 +1,12 @@
 # [Bluepicker](http://insanj.github.io/Bluepicker)
 
 Control Bluetooth devices via Activator.
-![ios 7 combined usage screenshot](screenie.png)
 
 > Bluepicker allows you to connect and disconnect from paired devices, as well as toggle Bluetooth using simple Activator actions. Choose a device from Bluepicker's selection sheet, and viola! Bluepicker also includes an Activator event, so you can assign any action you want to device connections and disconnections. 
 
 > Use [Polus](http://moreinfo.thebigboss.org/moreinfo/depiction.php?file=polusDp) (paid from [Jack Willis](https://twitter.com/J_W97) or [FlipControlCenter](http://moreinfo.thebigboss.org/moreinfo/depiction.php?file=flipcontrolcenterDp) (free from [Ryan Petrich](https://twitter.com/rpetrich)) for Control Center activation.
+
+![ios 7 combined usage screenshot](screenie.png)
 
 Supports iOS 5.x-8.x. Requires [Activator](http://rpetri.ch/cydia/activator/). Check [Releases](https://github.com/insanj/Bluepicker/releases) for current builds and screenshots.
 

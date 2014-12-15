@@ -1,4 +1,4 @@
-### [Bluepicker](https://github.com/insanj/SleepyAlarm)
+### [Bluepicker](https://github.com/insanj/Bluepicker)
 
                     GNU GENERAL PUBLIC LICENSE
 	                  Version 3, 29 June 2007

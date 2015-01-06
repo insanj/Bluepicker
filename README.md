@@ -4,7 +4,7 @@ Control Bluetooth devices via Activator.
 
 > Bluepicker allows you to connect and disconnect from paired devices, as well as toggle Bluetooth using simple Activator actions. Choose a device from Bluepicker's selection sheet, and viola! Bluepicker also includes an Activator event, so you can assign any action you want to device connections and disconnections. 
 
-> Use [Polus](http://moreinfo.thebigboss.org/moreinfo/depiction.php?file=polusDp) (paid from [Jack Willis](https://twitter.com/J_W97) or [FlipControlCenter](http://moreinfo.thebigboss.org/moreinfo/depiction.php?file=flipcontrolcenterDp) (free from [Ryan Petrich](https://twitter.com/rpetrich)) for Control Center activation.
+> Use [FlipControlCenter](http://moreinfo.thebigboss.org/moreinfo/depiction.php?file=flipcontrolcenterDp) for Control Center activation.
 
 ![ios 7 combined usage screenshot](screenie.png)
 
@@ -12,14 +12,17 @@ Supports iOS 5.x-8.x. Requires [Activator](http://rpetri.ch/cydia/activator/). C
 
 ## Usage
 
-Developers: want to do something fancy with Bluepicker? To bring up the selection sheet, all you have to do is post a single notification that follows the form:
-
-	[[NSDistributedNotificationCenter defaultCenter] postNotificationName:@"BPShowPicker" object:nil];
+Notification Name | Receiving Process | Sending Process |  Purpose
+---|---|---|---
+`Bluepicker.Alert` | Foreground `UIApplication`, hooked from `BluepickerListener` | `Bluepicker` Activator Listener, inside of Springboard | Shows alert sheet (picker) with `userInfo` given with `titles` key
+`Bluepicker.Dismiss` | | | Dismisses alert sheet without user input
+`Bluepicker.Choose` | `Bluepicker` Activator Listener, inside of Springboard | Foreground `UIApplication`, hooked from `BluepickerListener` | Sent after alert sheet dismissed with user input, given as `index`
+`Bluepicker.Start` |  | Foreground `UIApplication`, hooked from `BluepickerListener`, or **other tweaks**
 	
 ## [License](LICENSE.md)
 
 	Bluepicker: Control Bluetooth devices via Activator.
-	Copyright (C) 2014  Julian (insanj) Weiss
+	Copyright (C) 2014-2015 Julian (insanj) Weiss
 	
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by

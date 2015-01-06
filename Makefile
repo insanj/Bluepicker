@@ -11,6 +11,7 @@ Bluepicker_PRIVATE_FRAMEWORKS = BluetoothManager
 Bluepicker_LDFLAGS = -lactivator -Ltheos/lib
 
 include $(THEOS_MAKE_PATH)/tweak.mk
+SUBPROJECTS += BluepickerListener
 include $(THEOS_MAKE_PATH)/aggregate.mk
 
 internal-after-install::

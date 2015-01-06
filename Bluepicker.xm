@@ -14,13 +14,14 @@
 - (id)init {
 	self = [super init];
 	if (self) {
-		[[NSDistributedNotificationCenter defaultCenter] addObserver:self selector:@selector(showPicker) name:@"BPShowPicker" object:nil];
-		
+		[[NSDistributedNotificationCenter defaultCenter] addObserver:self selector:@selector(bluepickerChooseNotificationReceived:) name:@"Bluepicker.Choose" object:nil];
+		[[NSDistributedNotificationCenter defaultCenter] addObserver:self selector:@selector(bluepickerStartNotificationReceived:) name:@"Bluepicker.Start" object:nil];
+
 		[[NSNotificationCenter defaultCenter] addObserverForName:@"BluetoothPowerChangedNotification" object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *notification){
 			if (waitingForToggle) {
 				NSLog(@"[Bluepicker] Heard Bluetooth toggle notification, looks like we're prompting again...");
 				waitingForToggle = NO;
-				[self showPicker];
+				[self bluepickerStartNotificationReceived:nil];
 			}
 		}];
 	}
@@ -28,9 +29,58 @@
 	return self;
 }
 
-- (void)showPicker {
+- (void)bluepickerStartNotificationReceived:(NSNotification *)notification {
 	NSLog(@"[Bluepicker] Received external notification (possibly from Control Center), prompting Action...");
 	[self activator:nil receiveEvent:nil];
+}
+
+- (void)bluepickerChooseNotificationReceived:(NSNotification *)notification {
+	NSInteger indexChosen = [notification.userInfo[@"index"] integerValue];
+
+	// Cancel
+	if (indexChosen < 0 || indexChosen == devices.count - 2) {
+		NSLog(@"[Bluepicker] Dismissing action sheet after cancel button press");
+	}
+
+	// Turn On/Off Bluetooth
+	else if (indexChosen == devices.count - 1) {
+		if ([[BluetoothManager sharedInstance] enabled]) {
+			NSLog(@"[Bluepicker] Turning off Bluetooth as per user action");
+			[[BluetoothManager sharedInstance] setEnabled:NO];
+		}
+
+		else {
+			NSLog(@"[Bluepicker] Turning on Bluetooth as per user action");
+			[[BluetoothManager sharedInstance] setEnabled:YES];
+			waitingForToggle = YES;
+		}
+	}
+
+	else {
+		BluetoothDevice *selectedDevice = devices[indexChosen];
+
+		// attempted fix for issue #8
+		/* if (![[selectedDevice name] isEqualToString:clickedButtonTitle]) {
+			for (BluetoothDevice *device in devices) {
+				if ([[device name] isEqualToString:clickedButtonTitle]) {
+					selectedDevice = device;
+					break;
+				} 
+			}	
+		}*/
+
+		if ([[[BluetoothManager sharedInstance] connectedDevices] containsObject:selectedDevice]) {
+			NSLog(@"[Bluepicker] Trying to disconnected from: %@", selectedDevice);
+			[selectedDevice disconnect];
+		}
+
+		else {
+			NSLog(@"[Bluepicker] Trying to connect to: %@", selectedDevice);
+			[[BluetoothManager sharedInstance] connectDevice:selectedDevice];
+		}
+	}
+
+	devices = nil;
 }
 
 // Called when the user-defined action is recognized, shows selection sheet
@@ -41,42 +91,30 @@
 		}
 
 		devices = [[[BluetoothManager sharedInstance] pairedDevices] retain];
-		NSLog(@"[Bluepicker] Received Activator event, listing paired devices: %@", devices);
+		NSLog(@"[Bluepicker] Received Activator event, notifying to list paired devices: %@", devices);
 
-		bluepickerSheet = [[UIActionSheet alloc] initWithTitle:@"Bluepicker\nPaired Devices" delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
-		bluepickerSheet.actionSheetStyle = UIActionSheetStyleBlackTranslucent;
+		NSMutableArray *titles = [NSMutableArray arrayWithCapacity:devices.count];			
 
-		// Note: possible method of interest: -(void)setDeviceScanningEnabled:(BOOL)arg1;
 		for (BluetoothDevice *device in devices) {
 			if ([[[BluetoothManager sharedInstance] connectedDevices] containsObject:device]) {
-	        	[bluepickerSheet addButtonWithTitle:[@"●  " stringByAppendingString:[device name]]];
+	        	[titles addObject:[@"●  " stringByAppendingString:[device name]]];
 			}
 
 	        else {
-	        	[bluepickerSheet addButtonWithTitle:[device name]];
+	        	[titles addObject:[device name]];
 			}
 		}
 
 		if ([[BluetoothManager sharedInstance] enabled]) {
-			[bluepickerSheet addButtonWithTitle:@"Turn Off Bluetooth"];
+			[titles addObject:@"Turn Off Bluetooth"];
 		}
 
 		else {
-			[bluepickerSheet addButtonWithTitle:@"Turn On Bluetooth"];
+			[titles addObject:@"Turn On Bluetooth"];
 		}
 
-		[bluepickerSheet setDestructiveButtonIndex:bluepickerSheet.numberOfButtons-1];
 
-		[bluepickerSheet addButtonWithTitle:@"Cancel"];
-		[bluepickerSheet setCancelButtonIndex:bluepickerSheet.numberOfButtons-1];
-	
-		// If there's a foreground app, show picker on top of it...
-		// SBApplication *frontMostApp = [(SpringBoard *)[UIApplication sharedApplication] _accessibilityFrontMostApplication];
-		// if (frontMostApp) {
-			//[bluepickerSheet showInView:[frontMostApp keyWindow]];
-		// }
-		// [bluepickerSheet _presentSheetFromView:[UIApplication sharedApplication].keyWindow above:YES];
-		[bluepickerSheet showInView:[UIApplication sharedApplication].keyWindow];
+		[[NSDistributedNotificationCenter defaultCenter] postNotificationName:@"Bluepicker.Alert" object:nil userInfo:@{@"titles" : titles}];
 	}
 
 	else {
@@ -105,70 +143,17 @@
 
 // Called when manual dismiss of action sheet is required (eg from double event calls)
 - (BOOL)dismiss {
-	if (bluepickerSheet) {
-		[bluepickerSheet dismissWithClickedButtonIndex:[bluepickerSheet cancelButtonIndex] animated:YES];
+	if (devices) {
+		[[NSDistributedNotificationCenter defaultCenter] postNotificationName:@"Bluepicker.Dismiss" object:nil];
 		return YES;
 	}
 
 	return NO;
 }
 
-// Method to connect to BluetoothManager device (clicked valid button)
-- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
-	NSLog(@"[Bluepicker] Detected action sheet selection at index %i (cancel index: %i)", (int)buttonIndex, (int)[actionSheet cancelButtonIndex]);
-
-	if ([actionSheet destructiveButtonIndex] == buttonIndex) {
-		if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:@"Turn Off Bluetooth"]) {
-			NSLog(@"[Bluepicker] Turning off Bluetooth as per user action");
-			[[BluetoothManager sharedInstance] setEnabled:NO];
-		}
-
-		else {
-			NSLog(@"[Bluepicker] Turning on Bluetooth as per user action");
-			[[BluetoothManager sharedInstance] setEnabled:YES];
-			waitingForToggle = YES;
-		}
-	}
-
-	else if ([actionSheet cancelButtonIndex] != buttonIndex) {
-		NSString *clickedButtonTitle = [actionSheet buttonTitleAtIndex:buttonIndex];
-		BluetoothDevice *selectedDevice = devices[buttonIndex];
-
-		// attempted fix for issue #8
-		if (![[selectedDevice name] isEqualToString:clickedButtonTitle]) {
-			for (BluetoothDevice *device in devices) {
-				if ([[device name] isEqualToString:clickedButtonTitle]) {
-					selectedDevice = device;
-					break;
-				} 
-			}	
-		}
-
-		if ([[[BluetoothManager sharedInstance] connectedDevices] containsObject:selectedDevice]) {
-			NSLog(@"[Bluepicker] Trying to disconnected from: %@", selectedDevice);
-			[selectedDevice disconnect];
-		}
-
-		else {
-			NSLog(@"[Bluepicker] Trying to connect to: %@", selectedDevice);
-			[[BluetoothManager sharedInstance] connectDevice:selectedDevice];
-		}
-	}
-
-	else {
-		NSLog(@"[Bluepicker] Dismissing action sheet after cancel button press");
-	}
-}
-
-- (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
-	[bluepickerSheet release];
-	bluepickerSheet = nil;
-}
-
 - (void)dealloc {
 	[[NSDistributedNotificationCenter defaultCenter] removeObserver:self];
 
-	[bluepickerSheet release];
 	[devices release];
 	[super dealloc];
 }

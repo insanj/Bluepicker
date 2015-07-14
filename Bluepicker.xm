@@ -85,41 +85,36 @@
 
 // Called when the user-defined action is recognized, shows selection sheet
 - (void)activator:(LAActivator *)activator receiveEvent:(LAEvent *)event {
-	if (![self dismiss]) {
-		if (event) {
-			[event setHandled:YES];
+	[self dismiss];
+	if (event) {
+		[event setHandled:YES];
+	}
+
+	devices = [[[BluetoothManager sharedInstance] pairedDevices] retain];
+	NSLog(@"[Bluepicker] Received Activator event, notifying to list paired devices: %@", devices);
+
+	NSMutableArray *titles = [NSMutableArray arrayWithCapacity:devices.count];			
+
+	for (BluetoothDevice *device in devices) {
+		if ([[[BluetoothManager sharedInstance] connectedDevices] containsObject:device]) {
+        	[titles addObject:[@"●  " stringByAppendingString:[device name]]];
 		}
 
-		devices = [[[BluetoothManager sharedInstance] pairedDevices] retain];
-		NSLog(@"[Bluepicker] Received Activator event, notifying to list paired devices: %@", devices);
-
-		NSMutableArray *titles = [NSMutableArray arrayWithCapacity:devices.count];			
-
-		for (BluetoothDevice *device in devices) {
-			if ([[[BluetoothManager sharedInstance] connectedDevices] containsObject:device]) {
-	        	[titles addObject:[@"●  " stringByAppendingString:[device name]]];
-			}
-
-	        else {
-	        	[titles addObject:[device name]];
-			}
+        else {
+        	[titles addObject:[device name]];
 		}
+	}
 
-		if ([[BluetoothManager sharedInstance] enabled]) {
-			[titles addObject:@"Turn Off Bluetooth"];
-		}
-
-		else {
-			[titles addObject:@"Turn On Bluetooth"];
-		}
-
-
-		[[NSDistributedNotificationCenter defaultCenter] postNotificationName:@"Bluepicker.Alert" object:nil userInfo:@{@"titles" : titles}];
+	if ([[BluetoothManager sharedInstance] enabled]) {
+		[titles addObject:@"Turn Off Bluetooth"];
 	}
 
 	else {
-		NSLog(@"[Bluepicker] Received negating Activator event, dismissing action sheet");
+		[titles addObject:@"Turn On Bluetooth"];
 	}
+
+
+	[[NSDistributedNotificationCenter defaultCenter] postNotificationName:@"Bluepicker.Alert" object:nil userInfo:@{@"titles" : titles}];
 }
 
 - (void)activator:(LAActivator *)activator abortEvent:(LAEvent *)event {
@@ -131,9 +126,8 @@
 }
 
 - (void)activator:(LAActivator *)activator receiveDeactivateEvent:(LAEvent *)event {
-	if ([self dismiss]) {
-		[event setHandled:YES];
-	}
+	[self dismiss];
+	[event setHandled:YES];
 }
 
 // Restricts action to only be paired with other non-modal-ui actions
@@ -160,7 +154,7 @@
 
 + (void)load {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	[[LAActivator sharedInstance] registerListener:[self new] forName:@"libactivator.Bluepicker"];
+	[[LAActivator sharedInstance] registerListener:[self new] forName:@"com.insanj.Bluepicker"];
 	[pool release];
 }
 

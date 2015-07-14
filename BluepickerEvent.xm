@@ -1,5 +1,5 @@
 //
-//  Bluechooser.xm
+//  BluepickerEvent.xm
 //  Bluepicker
 //	Activator event for Bluetooth connections and disconnections.
 //	
@@ -7,14 +7,14 @@
 //  Copyright (c) 2014, insanj. All rights reserved.
 //
 
-#import "Bluechooser.h"
+#import "BluepickerEvent.h"
 
-@implementation Bluechooser
+@implementation BluepickerEvent
 
 + (id)sharedInstance {
-	static Bluechooser *shared = nil;
+	static BluepickerEvent *shared = nil;
 	if (!shared) {
-		shared = [[Bluechooser alloc] init];
+		shared = [[BluepickerEvent alloc] init];
 	}
 
 	return shared;
@@ -22,8 +22,8 @@
 
 - (id)init {
 	if ((self = [super init])) {
-		[LASharedActivator registerEventDataSource:self forEventName:kBluechooserConnectedEventName];
-		[LASharedActivator registerEventDataSource:self forEventName:kBluechooserDisconnectedEventName];
+		[LASharedActivator registerEventDataSource:self forEventName:kBluepickerEventConnectedEventName];
+		[LASharedActivator registerEventDataSource:self forEventName:kBluepickerEventDisconnectedEventName];
 	}
 
     return self;
@@ -31,15 +31,15 @@
 
 - (void)dealloc{
 	if (LASharedActivator.runningInsideSpringBoard) {
-		[LASharedActivator unregisterEventDataSourceWithEventName:kBluechooserConnectedEventName];
-		[LASharedActivator unregisterEventDataSourceWithEventName:kBluechooserDisconnectedEventName];
+		[LASharedActivator unregisterEventDataSourceWithEventName:kBluepickerEventConnectedEventName];
+		[LASharedActivator unregisterEventDataSourceWithEventName:kBluepickerEventDisconnectedEventName];
 	}
 
     [super dealloc];
 }
 
 - (NSString *)localizedTitleForEventName:(NSString *)eventName {
-	if ([eventName isEqualToString:kBluechooserConnectedEventName]) {
+	if ([eventName isEqualToString:kBluepickerEventConnectedEventName]) {
         return @"Connected";
 	}
 
@@ -51,7 +51,7 @@
 }
 
 - (NSString *)localizedDescriptionForEventName:(NSString *)eventName {
-	if ([eventName isEqualToString:kBluechooserConnectedEventName]) {
+	if ([eventName isEqualToString:kBluepickerEventConnectedEventName]) {
 		return @"Bluetooth Device connected.";
 	}
 
@@ -82,26 +82,26 @@
 	%orig();
 
 	if([arg1 isEqualToString:@"BluetoothDeviceConnectSuccessNotification"]) {
-		if(kBluechooserDidSucceed) {
+		if(kBluepickerEventDidSucceed) {
 			NSLog(@"[Bluepicker] Received bluetooth device connection notification, performing action...");
-			kBluechooserDidSucceed = NO; // Notification is always sent twice
-			LASendEventWithName(kBluechooserConnectedEventName);
+			kBluepickerEventDidSucceed = NO; // Notification is always sent twice
+			LASendEventWithName(kBluepickerEventConnectedEventName);
 		}
 
 		else {
 			NSLog(@"[Bluepicker] Received phony bluetooth device connection notification, waiting to perform action...");
-			kBluechooserDidSucceed = YES;
+			kBluepickerEventDidSucceed = YES;
 		}
 	}
 
 	else if ([arg1 isEqualToString:@"BluetoothDeviceDisconnectSuccessNotification"]) {
 		NSLog(@"[Bluepicker] Received bluetooth device disconnection notification...");
-		LASendEventWithName(kBluechooserDisconnectedEventName);
+		LASendEventWithName(kBluepickerEventDisconnectedEventName);
 	}
 }
 
 %end
 
 %ctor {
-	[Bluechooser sharedInstance];
+	[BluepickerEvent sharedInstance];
 }

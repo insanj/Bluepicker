@@ -25,6 +25,8 @@ static UIActionSheet *bluepickerSheet;
 - (id)initWithFrame:(CGRect)frame {
 	SBAppWindow *appWindow = %orig();
 
+	NSLog(@"[Bluepicker] Added notification listeners to window: %@", appWindow);
+
 	[[NSDistributedNotificationCenter defaultCenter] addObserver:appWindow selector:@selector(bluepickerAlertNotificationReceived:) name:@"Bluepicker.Alert" object:nil];
 	[[NSDistributedNotificationCenter defaultCenter] addObserver:appWindow selector:@selector(bluepickerDismissNotificationReceived:) name:@"Bluepicker.Dismiss" object:nil];
 
@@ -52,6 +54,8 @@ static UIActionSheet *bluepickerSheet;
 	[bluepickerSheet addButtonWithTitle:@"Cancel"];
 	[bluepickerSheet setCancelButtonIndex:bluepickerSheet.numberOfButtons-1];
 	[bluepickerSheet showInView:self];
+
+	NSLog(@"[Bluepicker] Notification received, presenting action sheet (%@) from view: %@", bluepickerSheet, self);
 }
 
 %new

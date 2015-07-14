@@ -1,5 +1,5 @@
 //
-//  Bluechooser.h
+//  BluepickerEvent.h
 //  Bluepicker
 //	Activator event for Bluetooth connections and disconnections.
 //	
@@ -11,9 +11,9 @@
 #import <libactivator/libactivator.h>
 #import <BluetoothManager/BluetoothManager.h>
 
-static NSString *kBluechooserConnectedEventName = @"com.insanj.bluepicker.connected";
-static NSString *kBluechooserDisconnectedEventName = @"com.insanj.bluepicker.disconnected";
-static BOOL kBluechooserDidSucceed = NO;
+static NSString *kBluepickerEventConnectedEventName = @"com.insanj.bluepicker.connected";
+static NSString *kBluepickerEventDisconnectedEventName = @"com.insanj.bluepicker.disconnected";
+static BOOL kBluepickerEventDidSucceed = NO;
 
 __attribute__((always_inline))
 static inline LAEvent *LASendEventWithName(NSString *eventName) {
@@ -22,6 +22,8 @@ static inline LAEvent *LASendEventWithName(NSString *eventName) {
 	return event;
 }
 
-@interface Bluechooser : NSObject <LAEventDataSource>
+@interface BluepickerEvent : NSObject <LAEventDataSource>
+
 + (id)sharedInstance;
+
 @end

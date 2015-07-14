@@ -1,7 +1,7 @@
 Package: com.insanj.bluepicker
 Name: Bluepicker
 Depends: mobilesubstrate, libactivator
-Version: 1.5
+Version: 1.6
 Architecture: iphoneos-arm
 Description: Control Bluetooth devices on the fly.
  Control your Bluetooth devices via Activator.
@@ -9,4 +9,4 @@ Description: Control Bluetooth devices on the fly.
 Maintainer: Julian Weiss <insanjmail@gmail.com>
 Author: Julian (insanj) Weiss
 Section: Tweaks
-Icon: file:///Library/Activator/Listeners/libactivator.Bluepicker/Icon-small@2x.png
+Icon: file:///Library/Activator/Listeners/com.insanj.Bluepicker/Icon-small@2x.png

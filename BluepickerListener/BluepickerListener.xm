@@ -3,24 +3,37 @@
 
 static UIActionSheet *bluepickerSheet;
 
-@interface UIApplication (Bluepicker)
+@interface FBWindow : UIWindow
+@end
+
+@interface SBWindow : FBWindow
+- (id)initWithFrame:(CGRect)frame;
+@end
+
+@interface SBAppWindow : SBWindow
+@end
+
+@interface SBAppWindow (Bluepicker) <UIActionSheetDelegate>
 
 - (void)bluepickerAlertNotificationReceived:(NSNotification *)notification;
 - (void)bluepickerDismissNotificationReceived:(NSNotification *)notification;
 
 @end
 
-%hook UIApplication
+%hook SBAppWindow
 
-- (void)applicationDidResume {
-	%orig();
+- (id)initWithFrame:(CGRect)frame {
+	SBAppWindow *appWindow = %orig();
 
-	[[NSDistributedNotificationCenter defaultCenter] addObserver:self selector:@selector(bluepickerAlertNotificationReceived:) name:@"Bluepicker.Alert" object:nil];
-	[[NSDistributedNotificationCenter defaultCenter] addObserver:self selector:@selector(bluepickerDismissNotificationReceived:) name:@"Bluepicker.Dismiss" object:nil];
+	[[NSDistributedNotificationCenter defaultCenter] addObserver:appWindow selector:@selector(bluepickerAlertNotificationReceived:) name:@"Bluepicker.Alert" object:nil];
+	[[NSDistributedNotificationCenter defaultCenter] addObserver:appWindow selector:@selector(bluepickerDismissNotificationReceived:) name:@"Bluepicker.Dismiss" object:nil];
+
+	return appWindow;
 }
 
-- (void)applicationSuspend {
-	[[NSDistributedNotificationCenter defaultCenter] removeObserver:self];
+- (void)dealloc {
+	[[NSDistributedNotificationCenter defaultCenter] removeObserver:self name:@"Bluepicker.Alert" object:nil];
+	[[NSDistributedNotificationCenter defaultCenter] removeObserver:self name:@"Bluepicker.Dismiss" object:nil];
 
 	%orig();
 }
@@ -38,7 +51,7 @@ static UIActionSheet *bluepickerSheet;
 	[bluepickerSheet setDestructiveButtonIndex:bluepickerSheet.numberOfButtons-1];
 	[bluepickerSheet addButtonWithTitle:@"Cancel"];
 	[bluepickerSheet setCancelButtonIndex:bluepickerSheet.numberOfButtons-1];
-	[bluepickerSheet showInView:self.delegate.window];
+	[bluepickerSheet showInView:self];
 }
 
 %new

@@ -91,6 +91,7 @@
 
 	_bluepickerSheetWindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
 	_bluepickerSheetWindow.backgroundColor = [UIColor clearColor];
+	_bluepickerSheetWindow.windowLevel = UIWindowLevelAlert + 1; // much love, jontelang!
 	[_bluepickerSheetWindow makeKeyAndVisible];
 
 	[_bluepickerSheet showInView:_bluepickerSheetWindow];
@@ -127,15 +128,12 @@
 	}
 }
 
-// Method to connect to BluetoothManager device (clicked valid button
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
-	// Cancel
-	if (buttonIndex < 0 || buttonIndex == _devices.count - 2) {
+	if (buttonIndex == [actionSheet cancelButtonIndex]) {
 		NSLog(@"[Bluepicker] Dismissing action sheet after cancel button press");
 	}
 
-	// Turn On/Off Bluetooth
-	else if (_devices.count == 0) {
+	else if (_devices.count == 0) { // Turn On/Off Bluetooth
 		if ([[BluetoothManager sharedInstance] enabled]) {
 			NSLog(@"[Bluepicker] Turning off Bluetooth as per user action");
 			[[BluetoothManager sharedInstance] setEnabled:NO];
@@ -167,14 +165,17 @@
 
 - (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
 	_bluepickerSheetWindow.hidden = YES;
-	[_bluepickerSheetWindow release];
-	[_bluepickerSheet release];
+	_bluepickerSheetWindow = nil;
+	_bluepickerSheet = nil;
 }
 
 - (void)dealloc {
 	[[NSDistributedNotificationCenter defaultCenter] removeObserver:self];
 
 	[_devices release];
+	[_bluepickerSheet release];
+	[_bluepickerSheetWindow release];
+
 	[super dealloc];
 }
 

@@ -3,34 +3,27 @@
 
 static UIActionSheet *bluepickerSheet;
 
-@interface FBWindow : UIWindow
+@interface SBApplication : UIApplication
+- (void)didLaunch:(id)launch;
+- (void)didSuspend;
 @end
 
-@interface SBWindow : FBWindow
-- (id)initWithFrame:(CGRect)frame;
-@end
-
-@interface SBAppWindow : SBWindow
-@end
-
-@interface SBAppWindow (Bluepicker) <UIActionSheetDelegate>
+@interface SBApplication (Bluepicker) <UIActionSheetDelegate>
 
 - (void)bluepickerAlertNotificationReceived:(NSNotification *)notification;
 - (void)bluepickerDismissNotificationReceived:(NSNotification *)notification;
 
 @end
 
-%hook SBAppWindow
+%hook SBApplication
 
-- (id)initWithFrame:(CGRect)frame {
-	SBAppWindow *appWindow = %orig();
+- (void)didLaunch:(id)launch {
+	NSLog(@"[Bluepicker] Added notification listeners to application (%@) launching: %@", self, launch);
 
-	NSLog(@"[Bluepicker] Added notification listeners to window: %@", appWindow);
+	[[NSDistributedNotificationCenter defaultCenter] addObserver:self selector:@selector(bluepickerAlertNotificationReceived:) name:@"Bluepicker.Alert" object:nil];
+	[[NSDistributedNotificationCenter defaultCenter] addObserver:self selector:@selector(bluepickerDismissNotificationReceived:) name:@"Bluepicker.Dismiss" object:nil];
 
-	[[NSDistributedNotificationCenter defaultCenter] addObserver:appWindow selector:@selector(bluepickerAlertNotificationReceived:) name:@"Bluepicker.Alert" object:nil];
-	[[NSDistributedNotificationCenter defaultCenter] addObserver:appWindow selector:@selector(bluepickerDismissNotificationReceived:) name:@"Bluepicker.Dismiss" object:nil];
-
-	return appWindow;
+	return %orig();
 }
 
 - (void)dealloc {
@@ -42,6 +35,7 @@ static UIActionSheet *bluepickerSheet;
 
 %new 
 - (void)bluepickerAlertNotificationReceived:(NSNotification *)notification {
+	NSLog(@"[Bluepicker] Notification received, presenting action sheet (%@) from view: %@", bluepickerSheet, self);
 	NSArray *titles = (NSArray *)notification.userInfo[@"titles"];
 
 	bluepickerSheet = [[UIActionSheet alloc] initWithTitle:@"Bluepicker\nPaired Devices" delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
@@ -54,8 +48,6 @@ static UIActionSheet *bluepickerSheet;
 	[bluepickerSheet addButtonWithTitle:@"Cancel"];
 	[bluepickerSheet setCancelButtonIndex:bluepickerSheet.numberOfButtons-1];
 	[bluepickerSheet showInView:self];
-
-	NSLog(@"[Bluepicker] Notification received, presenting action sheet (%@) from view: %@", bluepickerSheet, self);
 }
 
 %new

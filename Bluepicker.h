@@ -23,8 +23,6 @@
 - (void)activator:(LAActivator *)activator abortEvent:(LAEvent *)event;
 - (void)activator:(LAActivator *)activator otherListenerDidHandleEvent:(LAEvent *)event;
 - (void)activator:(LAActivator *)activator receiveDeactivateEvent:(LAEvent *)event;
-- (BOOL)dismiss;
-- (void)dealloc;
 + (void)load;
 
 @end

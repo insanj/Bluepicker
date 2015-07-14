@@ -10,15 +10,14 @@ Control Bluetooth devices via Activator.
 
 Supports iOS 5.x-8.x. Requires [Activator](http://rpetri.ch/cydia/activator/). Check [Releases](https://github.com/insanj/Bluepicker/releases) for current builds and screenshots.
 
-## Usage
+## Developers
 
-Notification Name | Receiving Process | Sending Process |  Purpose
----|---|---|---
-`Bluepicker.Alert` | Foreground `UIApplication`, hooked from `BluepickerListener` | `Bluepicker` Activator Listener, inside of Springboard | Shows alert sheet (picker) with `userInfo` given with `titles` key
-`Bluepicker.Dismiss` | | | Dismisses alert sheet without user input
-`Bluepicker.Choose` | `Bluepicker` Activator Listener, inside of Springboard | Foreground `UIApplication`, hooked from `BluepickerListener` | Sent after alert sheet dismissed with user input, given as `index`
-`Bluepicker.Start` |  | Foreground `UIApplication`, hooked from `BluepickerListener`, or **other tweaks**
-	
+Bluepicker conveniently registers itself (within SpringBoard) for the `Bluepicker.Start` notification on `NSDistributedNotificationCenter`. If you fire this off, Bluepicker will present an action sheet from the current context, and handle the rest of the work for you.
+
+For example:
+
+    [[NSDistributedNotificationCenter defaultCenter] postNotificationName:@"Bluepicker.Start" object:nil];
+
 ## [License](LICENSE.md)
 
 	Bluepicker: Control Bluetooth devices via Activator.

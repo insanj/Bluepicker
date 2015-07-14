@@ -9,6 +9,10 @@
 
 #import "Bluepicker.h"
 
+@interface UIWindow (Private)
+- (void)_setSecure:(BOOL)arg1; // thanks again jontelang + http://iphonedevwiki.net/index.php/Updating_extensions_for_iOS_8
+@end
+
 @interface Bluepicker ()
 
 @property (retain, nonatomic) NSArray *devices;
@@ -92,6 +96,11 @@
 	_bluepickerSheetWindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
 	_bluepickerSheetWindow.backgroundColor = [UIColor clearColor];
 	_bluepickerSheetWindow.windowLevel = UIWindowLevelAlert + 1; // much love, jontelang!
+
+	if ([_bluepickerSheetWindow respondsToSelector:@selector(_setSecure:)]) {
+		[_bluepickerSheetWindow _setSecure:YES];
+	}
+
 	[_bluepickerSheetWindow makeKeyAndVisible];
 
 	[_bluepickerSheet showInView:_bluepickerSheetWindow];

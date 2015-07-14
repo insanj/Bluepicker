@@ -17,11 +17,7 @@
 #import "substrate.h"
 #import <objc/runtime.h>
 
-@interface Bluepicker : NSObject <LAListener, UIActionSheetDelegate> {
-@private
-	NSArray *devices;
-	BOOL waitingForToggle;
-}
+@interface Bluepicker : NSObject <LAListener, UIActionSheetDelegate>
 
 - (void)activator:(LAActivator *)activator receiveEvent:(LAEvent *)event;
 - (void)activator:(LAActivator *)activator abortEvent:(LAEvent *)event;

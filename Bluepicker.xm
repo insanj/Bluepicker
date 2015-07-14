@@ -85,8 +85,8 @@
 		return;
 	}
 
-	_titles = [NSMutableArray array];
 	_devices = [[[BluetoothManager sharedInstance] pairedDevices] retain];
+	_titles = [[NSMutableArray alloc] initWithCapacity:_devices.count+1];
 
 	_bluepickerSheet = [[UIActionSheet alloc] initWithTitle:@"Bluepicker\nPaired Devices" delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
 
@@ -105,6 +105,8 @@
 	}
 
 	NSString *destructiveButtonTitle = [NSString stringWithFormat:@"Turn %@ Bluetooth", [[BluetoothManager sharedInstance] enabled] ? @"Off" : @"On"];
+	[_titles addObject:destructiveButtonTitle];
+
     _bluepickerSheet.destructiveButtonIndex = [_bluepickerSheet addButtonWithTitle:destructiveButtonTitle];
     _bluepickerSheet.cancelButtonIndex = [_bluepickerSheet addButtonWithTitle:@"Cancel"];
 
@@ -134,11 +136,14 @@
 }
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
-	if (buttonIndex == [actionSheet cancelButtonIndex] || buttonIndex < 0) { // Cancel
+	NSString *buttonTitle = [actionSheet buttonTitleAtIndex:buttonIndex];
+	NSLog(@"[Bluepicker] actionSheet:<%@>clickedButtonAtIndex:<%i>, buttonTitle:%@", actionSheet, (int)buttonIndex, buttonTitle);
+
+	if (buttonIndex < 0 || [buttonTitle isEqualToString:@"Cancel"]) { // Cancel
 		NSLog(@"[Bluepicker] Dismissing action sheet after cancel button press");
 	}
 
-	else if (buttonIndex == [actionSheet destructiveButtonIndex]) { // Turn On/Off Bluetooth
+	else if ([buttonTitle isEqualToString:[_titles lastObject]]) { // Turn On/Off Bluetooth
 		if ([[BluetoothManager sharedInstance] enabled]) {
 			NSLog(@"[Bluepicker] Turning off Bluetooth as per user action");
 			[[BluetoothManager sharedInstance] setEnabled:NO];
@@ -152,7 +157,7 @@
 	}
 
 	else {
-		BluetoothDevice *selectedDevice = _devices[[_titles indexOfObject:[actionSheet buttonTitleAtIndex:buttonIndex]]];
+		BluetoothDevice *selectedDevice = _devices[[_titles indexOfObject:buttonTitle]];
 
 		if ([[[BluetoothManager sharedInstance] connectedDevices] containsObject:selectedDevice]) {
 			NSLog(@"[Bluepicker] Trying to disconnected from: %@", selectedDevice);
@@ -178,6 +183,7 @@
 	[[NSDistributedNotificationCenter defaultCenter] removeObserver:self];
 
 	[_devices release];
+	[_titles release];
 	[_bluepickerSheet release];
 	[_bluepickerSheetWindow release];
 

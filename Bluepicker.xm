@@ -111,18 +111,24 @@
     _bluepickerSheet.destructiveButtonIndex = [_bluepickerSheet addButtonWithTitle:destructiveButtonTitle];
     _bluepickerSheet.cancelButtonIndex = [_bluepickerSheet addButtonWithTitle:@"Cancel"];
 
-	_bluepickerSheetWindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
-	_bluepickerSheetWindow.backgroundColor = [UIColor clearColor];
-	_bluepickerSheetWindow.windowLevel = UIWindowLevelAlert + 1; // much love, jontelang!
+	if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+		_bluepickerSheetWindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+		_bluepickerSheetWindow.backgroundColor = [UIColor clearColor];
+		_bluepickerSheetWindow.windowLevel = UIWindowLevelAlert + 1;
 
-	if ([_bluepickerSheetWindow respondsToSelector:@selector(_setSecure:)]) {
-		[_bluepickerSheetWindow _setSecure:YES];
+		if ([_bluepickerSheetWindow respondsToSelector:@selector(_setSecure:)]) {
+			[_bluepickerSheetWindow _setSecure:YES];
+		}
+
+		[_bluepickerSheetWindow makeKeyAndVisible];
+		[_bluepickerSheet showInView:_bluepickerSheetWindow];
+		NSLog(@"[Bluepicker] Notification received, presented action sheet (%@) from window: %@", _bluepickerSheet, _bluepickerSheetWindow);
 	}
 
-	[_bluepickerSheetWindow makeKeyAndVisible];
-	[_bluepickerSheet showInView:_bluepickerSheetWindow];
-
-	NSLog(@"[Bluepicker] Notification received, presented action sheet (%@) from window: %@", _bluepickerSheet, _bluepickerSheetWindow);
+	else {
+		[_bluepickerSheet showInView:[UIApplication sharedApplication].keyWindow];
+		NSLog(@"[Bluepicker] Notification received, presented action sheet (%@) from window: %@", _bluepickerSheet, [UIApplication sharedApplication].keyWindow);
+	}
 }
 
 - (void)dismiss {
@@ -174,8 +180,11 @@
 }
 
 - (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
-	_bluepickerSheetWindow.hidden = YES;
-	_bluepickerSheetWindow = nil;
+	if (_bluepickerSheetWindow) {
+		_bluepickerSheetWindow.hidden = YES;
+		_bluepickerSheetWindow = nil;
+	}
+	
 	_bluepickerSheet = nil;
 }
 

@@ -56,28 +56,29 @@
 - (void)activator:(LAActivator *)activator receiveEvent:(LAEvent *)event {
 	[event setHandled:YES];
 
-	NSLog(@"[Bluepicker] Activator action (activator:receiveEvent:) called");
+	NSLog(@"[Bluepicker] Listener received call to (activator:receiveEvent:)");
 	[self bluepickerStartNotificationReceived:nil];
 }
 
 - (void)activator:(LAActivator *)activator abortEvent:(LAEvent *)event {
+	NSLog(@"[Bluepicker] Listener received call to (activator:abortEvent:)");
 	[self dismiss];
 }
 
 - (void)activator:(LAActivator *)activator otherListenerDidHandleEvent:(LAEvent *)event {
+	NSLog(@"[Bluepicker] Listener received call to (activator:otherListenerDidHandleEvent:)");
 	[self dismiss];
 }
 
 - (void)activator:(LAActivator *)activator receiveDeactivateEvent:(LAEvent *)event {
+	NSLog(@"[Bluepicker] Listener received call to (activator:receiveDeactivateEvent:)");
 	[self dismiss];
-	[event setHandled:YES];
 }
 
 // Restricts action to only be paired with other non-modal-ui actions
 - (NSArray *)activator:(LAActivator *)activator requiresExclusiveAssignmentGroupsForListenerName:(NSString *)listenerName {
 	return @[@"modal-ui"];
 }
-
 
 - (void)bluepickerStartNotificationReceived:(NSNotification *)notification {	
 	if (_bluepickerSheet) {
@@ -124,10 +125,9 @@
 	NSLog(@"[Bluepicker] Notification received, presented action sheet (%@) from window: %@", _bluepickerSheet, _bluepickerSheetWindow);
 }
 
-// Called when manual dismiss of action sheet is required (eg from double event calls)
 - (void)dismiss {
 	if (_bluepickerSheet) {
-		[_bluepickerSheet dismissWithClickedButtonIndex:-1 animated:YES];
+		[_bluepickerSheet dismissWithClickedButtonIndex:_bluepickerSheet.cancelButtonIndex animated:YES];
 	}
 
 	else {
